@@ -1,7 +1,7 @@
 package com.example.riskcontrol.dao;
 
-import com.mongodb.MongoClient;
 import com.mongodb.client.AggregateIterable;
+import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Accumulators;
@@ -56,7 +56,7 @@ public class MongoDao {
      * @return
      */
     public int count(String collectionName, Document filter) {
-        return (int) getDB().getCollection(collectionName).count(filter);
+        return (int) getDB().getCollection(collectionName).countDocuments(filter);
     }
 
     /**

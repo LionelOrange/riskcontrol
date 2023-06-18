@@ -36,7 +36,9 @@
 
     <root level="WARN">
         <appender-ref ref="FILE"/>
+        <appender-ref ref="STDOUT"/>
     </root>
+
     <logger name="com.example" level="INFO"/>
     <logger name="org.springframework" level="INFO"/>
     <logger name="org.mybatis" level="INFO"/>
