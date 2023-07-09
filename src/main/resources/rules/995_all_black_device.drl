@@ -8,21 +8,21 @@ import com.example.riskcontrol.service.DimensionService
 global BlackListService blackListService
 global DimensionService dimensionService
 
-rule "997_all_blackip"
-    salience 997
+rule "995_all_blackip"
+    salience 995
     lock-on-active true
     when
           event:Event()
     then
-        if(blackListService.contain(BlackList.EnumDimension.IP,BlackList.EnumType.WHITE,event.getOperateIp())){
+        if(blackListService.contain(BlackList.EnumDimension.DEVICEID,BlackList.EnumType.WHITE,event.getDeviceId())){
             dimensionService.insertEvent(event);
             delete(event);
         }
 
-        if(blackListService.contain(BlackList.EnumDimension.IP,BlackList.EnumType.BLACK,event.getOperateIp())){
+        if(blackListService.contain(BlackList.EnumDimension.DEVICEID,BlackList.EnumType.BLACK,event.getDeviceId())){
             event.setScore(100);
             dimensionService.insertEvent(event);
-            dimensionService.insertRiskEvent(event,"黑名单ip");
+            dimensionService.insertRiskEvent(event,"黑名单设备id");
             delete(event);
         }
 end

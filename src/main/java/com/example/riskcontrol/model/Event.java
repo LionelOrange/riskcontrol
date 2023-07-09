@@ -23,6 +23,12 @@ public abstract class Event {
 
     public final static String OPERATEIPAREA = "operateIpArea";
 
+    public final static String MOBILE = "mobile";
+
+    public final static String OPERATEIP = "operateIp";
+
+    public final static String DEVICE = "deviceId";
+
 
     /**
      * 场景
@@ -43,6 +49,18 @@ public abstract class Event {
      * 事件评分
      */
     private int score;
+
+    /**
+     * 手机号
+     */
+    private String mobile;
+
+    /**
+     * 设备id
+     */
+    private String operateIp;
+
+    private String deviceId;
 
     /****** TODO 以下扩展维度*****/
     /**
@@ -121,6 +139,29 @@ public abstract class Event {
         this.score = score;
     }
 
+    public String getMobile() {
+        return mobile;
+    }
+
+    public void setMobile(String mobile) {
+        this.mobile = mobile;
+    }
+
+    public String getOperateIp() {
+        return operateIp;
+    }
+
+    public void setOperateIp(String operateIp) {
+        this.operateIp = operateIp;
+    }
+
+    public String getDeviceId() {
+        return deviceId;
+    }
+
+    public void setDeviceId(String deviceId) {
+        this.deviceId = deviceId;
+    }
 
     /**
      * 计算事件评分
