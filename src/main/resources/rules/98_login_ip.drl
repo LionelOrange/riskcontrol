@@ -7,7 +7,9 @@ import com.example.riskcontrol.model.EnumTimePeriod
 global DimensionService dimensionService
 
 rule "98_login_ip"
+    //执行顺序，数字越大，优先级越高
     salience 98
+    //锁定活跃,当规则体设置该属性为true时，则当前只会被触发一次
     lock-on-active true
     when
         event:LoginEvent()
