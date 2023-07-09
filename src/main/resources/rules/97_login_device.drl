@@ -1,0 +1,20 @@
+package rules;
+
+import com.example.riskcontrol.model.LoginEvent
+import com.example.riskcontrol.service.DimensionService
+import com.example.riskcontrol.model.EnumTimePeriod
+
+global DimensionService dimensionService
+
+rule "97_login_device"
+    salience 97
+    lock-on-active true
+    when
+        event:LoginEvent(deviceId!=null)
+    then
+        int count  = dimensionService.distinctCount(event,new String[]{LoginEvent.DEVICE},EnumTimePeriod.LASTDAY,LoginEvent.MOBILE);
+        if(event.addScore(count,5,10,1)){
+            dimensionService.insertRiskEvent(event,"近一天内同设备id出现多个手机号,count="+count);
+        }
+
+end
