@@ -29,6 +29,8 @@ public abstract class Event {
 
     public final static String DEVICE = "deviceId";
 
+    public final static String OPENID = "openId";
+
 
     /**
      * 场景
@@ -55,12 +57,17 @@ public abstract class Event {
      */
     private String mobile;
 
+    private String operateIp;
+
     /**
      * 设备id
      */
-    private String operateIp;
-
     private String deviceId;
+
+    /**
+     * 微信openId
+     */
+    private String openId;
 
     /****** TODO 以下扩展维度*****/
     /**
@@ -161,6 +168,14 @@ public abstract class Event {
 
     public void setDeviceId(String deviceId) {
         this.deviceId = deviceId;
+    }
+
+    public String getOpenId() {
+        return openId;
+    }
+
+    public void setOpenId(String openId) {
+        this.openId = openId;
     }
 
     /**

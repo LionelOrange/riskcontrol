@@ -1,6 +1,6 @@
 package rules;
 
-import com.example.riskcontrol.model.LoginEvent
+import com.example.riskcontrol.model.Event
 import com.example.riskcontrol.service.BlackListService
 import com.example.riskcontrol.model.BlackList
 import com.example.riskcontrol.service.DimensionService
@@ -8,7 +8,7 @@ import com.example.riskcontrol.service.DimensionService
 global BlackListService blackListService
 global DimensionService dimensionService
 
-rule "996_all_blackip"
+rule "996_all_black_mobile"
     salience 996
     lock-on-active true
     when

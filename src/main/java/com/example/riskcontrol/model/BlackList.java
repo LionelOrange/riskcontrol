@@ -82,7 +82,9 @@ public class BlackList {
     public static enum EnumDimension {
         MOBILE,
         IP,
-        DEVICEID;
+        DEVICEID,
+        OPENID
+        ;
     }
 
     /**

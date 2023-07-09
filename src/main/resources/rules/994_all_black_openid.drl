@@ -8,18 +8,18 @@ import com.example.riskcontrol.service.DimensionService
 global BlackListService blackListService
 global DimensionService dimensionService
 
-rule "995_all_black_device"
-    salience 995
+rule "994_all_black_openid"
+    salience 994
     lock-on-active true
     when
-          event:Event(deviceId!=null)
+          event:Event(openId!=null)
     then
-        if(blackListService.contain(BlackList.EnumDimension.DEVICEID,BlackList.EnumType.WHITE,event.getDeviceId())){
+        if(blackListService.contain(BlackList.EnumDimension.OPENID,BlackList.EnumType.WHITE,event.getOpenId())){
             dimensionService.insertEvent(event);
             delete(event);
         }
 
-        if(blackListService.contain(BlackList.EnumDimension.DEVICEID,BlackList.EnumType.BLACK,event.getDeviceId())){
+        if(blackListService.contain(BlackList.EnumDimension.OPENID,BlackList.EnumType.BLACK,event.getOpenId())){
             event.setScore(100);
             dimensionService.insertEvent(event);
             dimensionService.insertRiskEvent(event,"黑名单设备id");
