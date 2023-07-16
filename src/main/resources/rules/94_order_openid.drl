@@ -1,0 +1,22 @@
+package rules;
+
+import com.example.riskcontrol.model.OrderEvent
+import com.example.riskcontrol.service.DimensionService
+import com.example.riskcontrol.model.EnumTimePeriod
+
+global DimensionService dimensionService
+/**
+ *同一个openid切换手机号下单，7天内超过3个账号的，触发规则
+ */
+rule "94_order_openid"
+    salience 94
+    lock-on-active true
+    when
+        event:OrderEvent(openId!=null,openId!="")
+    then
+        int count  = dimensionService.distinctCount(event,new String[]{OrderEvent.OPENID},EnumTimePeriod.LASTWEEK,OrderEvent.MOBILE);
+        if(event.addScore(count,3,10,1)){
+            dimensionService.insertRiskEvent(event,"同一个openid切换手机号下单，7天内超过3个账号,count="+count);
+        }
+
+end

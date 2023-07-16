@@ -10,7 +10,7 @@ rule "96_login_openid"
     salience 96
     lock-on-active true
     when
-        event:LoginEvent(openId!=null)
+        event:LoginEvent(openId!=null,openId!="")
     then
         int count  = dimensionService.distinctCount(event,new String[]{LoginEvent.OPENID},EnumTimePeriod.LASTWEEK,LoginEvent.MOBILE);
         if(event.addScore(count,5,10,1)){

@@ -1,0 +1,22 @@
+package rules;
+
+import com.example.riskcontrol.model.OrderEvent
+import com.example.riskcontrol.service.DimensionService
+import com.example.riskcontrol.model.EnumTimePeriod
+
+global DimensionService dimensionService
+/**
+ *同IP地址下10分钟左右内超过5个账号下单，触发规则
+ */
+rule "95_order_ip"
+    salience 95
+    lock-on-active true
+    when
+        event:OrderEvent(operateIp!=null,operateIp!="")
+    then
+        int count  = dimensionService.distinctCount(event,new String[]{OrderEvent.OPERATEIP},EnumTimePeriod.LAST10MIN,OrderEvent.MOBILE);
+        if(event.addScore(count,5,10,1)){
+            dimensionService.insertRiskEvent(event,"同IP地址下切换账号下单，10分钟内大于等于5个账号,count="+count);
+        }
+
+end

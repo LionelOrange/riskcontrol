@@ -1,10 +1,7 @@
 package com.example.riskcontrol.util;
 
 import com.alibaba.fastjson.JSON;
-import com.example.riskcontrol.model.EnumScene;
-import com.example.riskcontrol.model.Event;
-import com.example.riskcontrol.model.LoginEvent;
-import com.example.riskcontrol.model.RCRuntimeException;
+import com.example.riskcontrol.model.*;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,6 +34,8 @@ public class EventFactory {
         Event event = null;
         if (EnumScene.LOGIN.equals(enumScene)) {
             event = JSON.parseObject(json, LoginEvent.class);
+        } else if (EnumScene.ORDER.equals(enumScene)) {
+            event = JSON.parseObject(json, OrderEvent.class);
         }
 
         check(event);

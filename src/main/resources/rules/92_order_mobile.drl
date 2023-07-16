@@ -1,0 +1,22 @@
+package rules;
+
+import com.example.riskcontrol.model.OrderEvent
+import com.example.riskcontrol.service.DimensionService
+import com.example.riskcontrol.model.EnumTimePeriod
+
+global DimensionService dimensionService
+/**
+ *同一个手机号或者账号5分钟内下单次数超过8单的，触发规则
+ */
+rule "92_order_mobile"
+    salience 92
+    lock-on-active true
+    when
+        event:OrderEvent(mobile!=null,mobile!="",orderNo!=null,orderNo!="")
+    then
+        int count  = dimensionService.distinctCount(event,new String[]{OrderEvent.MOBILE},EnumTimePeriod.LAST5MIN,OrderEvent.ORDERNO);
+        if(event.addScore(count,8,10,1)){
+            dimensionService.insertRiskEvent(event,"同一个手机号或者账号5分钟内下单次数超过8单，触发规则,count="+count);
+        }
+
+end

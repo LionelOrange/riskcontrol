@@ -1,0 +1,22 @@
+package rules;
+
+import com.example.riskcontrol.model.OrderEvent
+import com.example.riskcontrol.service.DimensionService
+import com.example.riskcontrol.model.EnumTimePeriod
+
+global DimensionService dimensionService
+/**
+ *同一个手机号14天内在超过2个设备上下单，触发规则
+ */
+rule "93_order_mobile"
+    salience 93
+    lock-on-active true
+    when
+        event:OrderEvent(mobile!=null,mobile!="",deviceId!=null,deviceId!="")
+    then
+        int count  = dimensionService.distinctCount(event,new String[]{OrderEvent.MOBILE},EnumTimePeriod.LASTTWOWEEK,OrderEvent.DEVICE);
+        if(event.addScore(count,2,10,1)){
+            dimensionService.insertRiskEvent(event,"同一个手机号14天内在超过2个设备上下单，触发规则,count="+count);
+        }
+
+end
