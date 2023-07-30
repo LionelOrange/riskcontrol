@@ -22,7 +22,7 @@ rule "996_all_black_mobile"
         if(blackListService.contain(BlackList.EnumDimension.MOBILE,BlackList.EnumType.BLACK,event.getMobile())){
             event.setScore(100);
             dimensionService.insertEsEvent(event);
-            dimensionService.insertRiskEvent(event,"黑名单手机号");
+            dimensionService.insertEsRiskEvent(event,"黑名单手机号");
             delete(event);
         }
 end

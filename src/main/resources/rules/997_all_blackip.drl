@@ -22,7 +22,7 @@ rule "997_all_blackip"
         if(blackListService.contain(BlackList.EnumDimension.IP,BlackList.EnumType.BLACK,event.getOperateIp())){
             event.setScore(100);
             dimensionService.insertEsEvent(event);
-            dimensionService.insertRiskEvent(event,"黑名单ip");
+            dimensionService.insertEsRiskEvent(event,"黑名单ip");
             delete(event);
         }
 end

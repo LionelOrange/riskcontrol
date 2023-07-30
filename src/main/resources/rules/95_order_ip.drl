@@ -16,7 +16,7 @@ rule "95_order_ip"
     then
         int count  = dimensionService.distinctCount(event,new String[]{OrderEvent.OPERATEIP},EnumTimePeriod.LAST10MIN,OrderEvent.MOBILE);
         if(event.addScore(count,5,10,1)){
-            dimensionService.insertRiskEvent(event,"同IP地址下切换账号下单，10分钟内大于等于5个账号,count="+count);
+            dimensionService.insertEsRiskEvent(event,"同IP地址下切换账号下单，10分钟内大于等于5个账号,count="+count);
         }
 
 end

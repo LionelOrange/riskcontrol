@@ -14,7 +14,7 @@ rule "97_login_device"
     then
         int count  = dimensionService.distinctCount(event,new String[]{LoginEvent.DEVICE},EnumTimePeriod.LASTDAY,LoginEvent.MOBILE);
         if(event.addScore(count,5,10,1)){
-            dimensionService.insertRiskEvent(event,"近一天内同设备id出现多个手机号,count="+count);
+            dimensionService.insertEsRiskEvent(event,"近一天内同设备id出现多个手机号,count="+count);
         }
 
 end

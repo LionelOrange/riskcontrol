@@ -54,7 +54,10 @@ public class EventFactory {
         if (StringUtils.isEmpty(event.getId())) {
             event.setId(UUID.randomUUID().toString());
         }
-
+        //设置手机号段，截取手机号前七位
+        if (StringUtils.isBlank(event.getMobileSeg()) && StringUtils.isNotBlank(event.getMobile())){
+            event.setMobileSeg(event.getMobile().substring(0,7));
+        }
         // TODO  扩展维度信息
     }
 

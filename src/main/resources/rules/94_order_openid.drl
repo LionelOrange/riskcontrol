@@ -16,7 +16,7 @@ rule "94_order_openid"
     then
         int count  = dimensionService.distinctCount(event,new String[]{OrderEvent.OPENID},EnumTimePeriod.LASTWEEK,OrderEvent.MOBILE);
         if(event.addScore(count,3,10,1)){
-            dimensionService.insertRiskEvent(event,"同一个openid切换手机号下单，7天内超过3个账号,count="+count);
+            dimensionService.insertEsRiskEvent(event,"同一个openid切换手机号下单，7天内超过3个账号,count="+count);
         }
 
 end

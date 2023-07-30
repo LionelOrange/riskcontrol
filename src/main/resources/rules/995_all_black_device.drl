@@ -22,7 +22,7 @@ rule "995_all_black_device"
         if(blackListService.contain(BlackList.EnumDimension.DEVICEID,BlackList.EnumType.BLACK,event.getDeviceId())){
             event.setScore(100);
             dimensionService.insertEsEvent(event);
-            dimensionService.insertRiskEvent(event,"黑名单设备id");
+            dimensionService.insertEsRiskEvent(event,"黑名单设备id");
             delete(event);
         }
 end

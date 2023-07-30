@@ -179,6 +179,26 @@ public class DimensionService {
         logger.warn("可疑事件，event={},rule={}", JSON.toJSONString(event), rule);
     }
 
+    public void insertEsRiskEvent(Event event, String rule) {
+        Map<String, Object> dataMap = new HashMap<>();
+        try {
+            PropertyDescriptor[] propertyDescriptors = PropertyUtils.getPropertyDescriptors(event);
+            for (PropertyDescriptor propertyDescriptor : propertyDescriptors) {
+                String name = propertyDescriptor.getName();
+                if (!"class".equals(name)) {
+                    dataMap.put(name, PropertyUtils.getProperty(event, name));
+                }
+            }
+        } catch (Exception e) {
+            logger.error("is error",e);
+        }
+        dataMap.put("rule", rule);
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        dataMap.put("operateTimeFormat",formatter.format(event.getOperateTime()));
+        esDao.singleIndexDoc(dataMap, "risk_event",event.getId());
+        logger.warn("可疑事件，event={},rule={}", JSON.toJSONString(event), rule);
+    }
+
     public void insertEsEvent(Event event) {
         Map<String, Object> dataMap = new HashMap<>();
         try {
@@ -198,7 +218,7 @@ public class DimensionService {
             OrderEvent orderEvent = (OrderEvent) event;
             esDao.singleIndexDoc(dataMap, "order_event",orderEvent.getOrderNo());
         }else if (EnumScene.LOGIN.equals(EnumScene.valueOf(event.getScene().toUpperCase()))) {
-            esDao.singleIndexDoc(dataMap, "login_event", null);
+            esDao.singleIndexDoc(dataMap, "login_event", event.getId());
         }
     }
 

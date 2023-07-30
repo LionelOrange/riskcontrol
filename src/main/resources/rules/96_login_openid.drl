@@ -14,7 +14,7 @@ rule "96_login_openid"
     then
         int count  = dimensionService.distinctCount(event,new String[]{LoginEvent.OPENID},EnumTimePeriod.LASTWEEK,LoginEvent.MOBILE);
         if(event.addScore(count,5,10,1)){
-            dimensionService.insertRiskEvent(event,"同一个openid切换手机号登录，7天内大于等于5个账号,count="+count);
+            dimensionService.insertEsRiskEvent(event,"同一个openid切换手机号登录，7天内大于等于5个账号,count="+count);
         }
 
 end
