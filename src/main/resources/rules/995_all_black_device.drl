@@ -15,13 +15,13 @@ rule "995_all_black_device"
           event:Event(deviceId!=null)
     then
         if(blackListService.contain(BlackList.EnumDimension.DEVICEID,BlackList.EnumType.WHITE,event.getDeviceId())){
-            dimensionService.insertEvent(event);
+            dimensionService.insertEsEvent(event);
             delete(event);
         }
 
         if(blackListService.contain(BlackList.EnumDimension.DEVICEID,BlackList.EnumType.BLACK,event.getDeviceId())){
             event.setScore(100);
-            dimensionService.insertEvent(event);
+            dimensionService.insertEsEvent(event);
             dimensionService.insertRiskEvent(event,"黑名单设备id");
             delete(event);
         }

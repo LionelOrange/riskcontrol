@@ -11,7 +11,7 @@ rule "0_all_addevent"
     when
         event:Event()
     then
-        dimensionService.insertEvent(event);
+        dimensionService.insertEsEvent(event);
 
 end
 

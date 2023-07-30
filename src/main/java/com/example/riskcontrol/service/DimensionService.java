@@ -1,11 +1,16 @@
 package com.example.riskcontrol.service;
 
 import com.alibaba.fastjson.JSON;
+import com.example.riskcontrol.dao.EsDao;
 import com.example.riskcontrol.dao.MongoDao;
 import com.example.riskcontrol.dao.RedisDao;
+import com.example.riskcontrol.model.EnumScene;
 import com.example.riskcontrol.model.EnumTimePeriod;
 import com.example.riskcontrol.model.Event;
+import com.example.riskcontrol.model.OrderEvent;
 import com.example.riskcontrol.util.DocumentDecoder;
+import org.apache.commons.beanutils.BeanMap;
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.bson.Document;
@@ -14,9 +19,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.beans.PropertyDescriptor;
+import java.lang.reflect.InvocationTargetException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by sunpeak on 2016/8/6.
@@ -24,13 +30,16 @@ import java.util.List;
 @Service
 public class DimensionService {
 
-    private static Logger logger = LoggerFactory.getLogger(DimensionService.class);
+    private static final Logger logger = LoggerFactory.getLogger(DimensionService.class);
 
     @Autowired
     private MongoDao mongoDao;
 
     @Autowired
     private RedisDao redisDao;
+
+    @Autowired
+    private EsDao esDao;
 
     private String riskEventCollection = "riskevent";
 
@@ -168,6 +177,29 @@ public class DimensionService {
         document.append("rule", rule);
         mongoDao.insert(riskEventCollection, document);
         logger.warn("可疑事件，event={},rule={}", JSON.toJSONString(event), rule);
+    }
+
+    public void insertEsEvent(Event event) {
+        Map<String, Object> dataMap = new HashMap<>();
+        try {
+            PropertyDescriptor[] propertyDescriptors = PropertyUtils.getPropertyDescriptors(event);
+            for (PropertyDescriptor propertyDescriptor : propertyDescriptors) {
+                String name = propertyDescriptor.getName();
+                if (!"class".equals(name)) {
+                    dataMap.put(name, PropertyUtils.getProperty(event, name));
+                }
+            }
+        } catch (Exception e) {
+            logger.error("is error",e);
+        }
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        dataMap.put("operateTimeFormat", formatter.format(new Date()));
+        if (EnumScene.ORDER.equals(EnumScene.valueOf(event.getScene().toUpperCase()))) {
+            OrderEvent orderEvent = (OrderEvent) event;
+            esDao.singleIndexDoc(dataMap, "order_event",orderEvent.getOrderNo());
+        }else if (EnumScene.LOGIN.equals(EnumScene.valueOf(event.getScene().toUpperCase()))) {
+            esDao.singleIndexDoc(dataMap, "login_event", null);
+        }
     }
 
     public int count(Event event, String[] condDimensions, EnumTimePeriod enumTimePeriod) {
