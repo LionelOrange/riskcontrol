@@ -1,19 +1,19 @@
 package com.example.riskcontrol.controller;
 
-import com.example.riskcontrol.model.BlackList;
-import com.example.riskcontrol.model.CodeMap;
-import com.example.riskcontrol.model.RCRuntimeException;
-import com.example.riskcontrol.model.Result;
+import com.example.riskcontrol.dao.EsDao;
+import com.example.riskcontrol.model.*;
 import com.example.riskcontrol.service.BlackListService;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by sunpeak on 2016/8/6.
@@ -26,6 +26,8 @@ public class BlackListController {
 
     @Autowired
     private BlackListService blackListService;
+    @Autowired
+    private EsDao esDao;
 
 
     @RequestMapping(path = "/queryall", method = RequestMethod.GET)
@@ -71,6 +73,27 @@ public class BlackListController {
             r.setRetCode(e.getId());
         } catch (Exception e) {
             logger.error("添加黑名单失败", e);
+            r = Result.fail();
+        }
+        return r;
+    }
+
+    @RequestMapping(value = "/list", method = RequestMethod.POST)
+    public Result<PageList<Map<String, Object>>> list(@RequestBody RiskEventEsModelQueryParam riskEventEsModelQueryParam) {
+        if (riskEventEsModelQueryParam.getCurrentPage() == null) {
+            riskEventEsModelQueryParam.setCurrentPage(1);
+        }
+        if (riskEventEsModelQueryParam.getPageSize() == null) {
+            riskEventEsModelQueryParam.setPageSize(10);
+        }
+        if (riskEventEsModelQueryParam.getIndexName()==null){
+            riskEventEsModelQueryParam.setIndexName("risk_event");
+        }
+        Result<PageList<Map<String, Object>>> r = Result.success();
+        try {
+            r.setData(esDao.filterRiskEventSearch(riskEventEsModelQueryParam));
+        } catch (Exception e) {
+            logger.error("获取触发规则记录失败", e);
             r = Result.fail();
         }
         return r;
